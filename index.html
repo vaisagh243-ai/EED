@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KCraft Studio // Ultra Cinematic Roblox Game Development & Learning Platform</title>
+  <meta name="description" content="KCraft Studio - Next-generation Roblox game development studio, combat mechanics engineering, particle VFX, and comprehensive Luau learning platform by VAISHAKH798.">
+  <meta name="author" content="VAISHAKH798 (KCraft)">
+  <meta name="theme-color" content="#060608">
+
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="KCraft Studio // Ultra Cinematic Roblox Studio Experience">
+  <meta property="og:description" content="Explore advanced Roblox combat systems, particle VFX engineering, interactive Luau lab, and comprehensive developer courses.">
+  <meta property="og:image" content="assets/logo/kcraft-logo.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/logo/kcraft-logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/vfx.css">
+</head>
+<body>
+
+  <!-- GLOBAL PERSISTENT 3D WEBGL/CANVAS UNIVERSE -->
+  <canvas id="global-3d-canvas" style="position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 0;"></canvas>
+
+  <!-- Custom User Cursor Elements -->
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"></div>
+
+  <!-- Scroll Progress Indicator -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Sticky Section Navigation Dots -->
+  <nav class="section-nav-dots" aria-label="Section navigation">
+    <div class="nav-dot active" data-target="hero" data-label="HOME"></div>
+    <div class="nav-dot" data-target="about" data-label="ABOUT"></div>
+    <div class="nav-dot" data-target="learning" data-label="LEARNING"></div>
+    <div class="nav-dot" data-target="projects" data-label="PROJECTS"></div>
+    <div class="nav-dot" data-target="dev-lab" data-label="DEV LAB"></div>
+    <div class="nav-dot" data-target="process" data-label="PROCESS"></div>
+    <div class="nav-dot" data-target="community" data-label="COMMUNITY"></div>
+    <div class="nav-dot" data-target="contact" data-label="CONTACT"></div>
+  </nav>
+
+  <!-- Interactive Multi-Cursor Architect Swarm HUD -->
+  <aside id="architect-swarm-hud" aria-label="Digital Architect Swarm Controls">
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <span class="swarm-status-dot"></span>
+      <div style="display: flex; flex-direction: column;">
+        <span class="font-mono" style="font-size: 0.75rem; font-weight: 700; color: #fff; letter-spacing: 0.05em;">
+          10-BOT ARCHITECT SWARM
+        </span>
+        <span class="font-mono" style="font-size: 0.6rem; color: #00e5ff; letter-spacing: 0.03em;">
+          α β γ δ ε ζ η θ ι κ &nbsp;·&nbsp; SCROLL TO BUILD
+        </span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 0.4rem;">
+      <button id="reconstruct-btn" class="btn btn-secondary"
+              onclick="window.architectSwarm && window.architectSwarm.triggerReconstructAll();"
+              style="padding: 0.35rem 0.65rem; font-size: 0.75rem; border-radius: 4px;"
+              title="Trigger full section rebuild">
+        ⚡ REBUILD SECTION
+      </button>
+    </div>
+  </aside>
+
+  <!-- Cinematic Preloader -->
+  <div id="preloader">
+    <div class="loader-logo-wrap">
+      <div class="loader-spinner"></div>
+      <div class="loader-spinner-outer"></div>
+      <img src="assets/logo/kcraft-logo.png" alt="KCraft Studio Logo">
+    </div>
+    <div class="loader-bar-bg">
+      <div class="loader-bar-fill"></div>
+    </div>
+    <div class="loader-status">
+      <span style="color: var(--primary-orange);">›</span>
+      <span id="loader-status-text">INITIALIZING 3D STUD ENGINE & 6-UI ARCHITECTURE...</span>
+    </div>
+  </div>
+
+  <!-- Master Navigation Header -->
+  <header id="main-navbar" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 0.75rem 0; border-bottom: 1px solid var(--border-subtle); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); background: rgba(10, 10, 14, 0.75); transition: all 0.3s ease;">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+      
+      <!-- Studio Brand Logo -->
+      <a href="#hero" style="display: flex; align-items: center; gap: 0.85rem; text-decoration: none;" aria-label="KCraft Studio Home">
+        <img src="assets/logo/kcraft-logo.png" alt="KCraft Logo" style="width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(255, 85, 0, 0.6));">
+        <div style="display: flex; flex-direction: column;">
+          <span class="font-display" style="font-size: 1.4rem; font-weight: 800; letter-spacing: 0.08em; color: #fff; line-height: 1;">K<span style="color: var(--primary-orange);">CRAFT</span></span>
+          <span class="font-mono" style="font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.2em;">ROBLOX STUDIO</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="desktop-nav" style="display: none; align-items: center; gap: 1.8rem;">
+        <a href="#hero" class="nav-link font-display active" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; transition: color 0.2s;">HOME</a>
+        <a href="#about" class="nav-link font-display" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; transition: color 0.2s;">ABOUT</a>
+        <a href="#learning" class="nav-link font-display" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; transition: color 0.2s;">LEARNING</a>
+        <a href="#projects" class="nav-link font-display" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; transition: color 0.2s;">PROJECTS</a>
+        <a href="#dev-lab" class="nav-link font-display" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; transition: color 0.2s;">DEV LAB</a>
+        <a href="#process" class="nav-link font-display" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; transition: color 0.2s;">PROCESS</a>
+        <a href="#community" class="nav-link font-display" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; transition: color 0.2s;">COMMUNITY</a>
+        <a href="#contact" class="nav-link font-display" style="color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em; transition: color 0.2s;">CONTACT</a>
+      </nav>
+
+      <!-- System Controls & CTA -->
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <button id="audio-toggle-btn" class="btn btn-secondary btn-icon-only" aria-label="Toggle Futuristic Audio Effects" title="Toggle Audio FX">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        </button>
+
+        <button id="motion-toggle-btn" class="btn btn-secondary btn-icon-only" aria-label="Toggle Reduced Motion" title="Toggle Reduced Motion">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </button>
+
+        <a href="https://discord.gg/NUMnh3fwq" target="_blank" rel="noopener noreferrer" class="btn btn-discord-1" style="padding: 0.55rem 1rem; font-size: 0.8rem; display: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          DISCORD
+        </a>
+
+        <button id="mobile-menu-toggle" class="btn btn-secondary btn-icon-only mobile-only" aria-label="Toggle Mobile Menu" style="display: flex;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div id="mobile-drawer" style="position: fixed; inset: 0; background: rgba(8, 8, 12, 0.98); backdrop-filter: blur(25px); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 1.8rem; opacity: 0; visibility: hidden; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+    <a href="#hero" class="font-display mobile-nav-link" style="color: #fff; font-size: 1.8rem; font-weight: 700; text-decoration: none;">HOME</a>
+    <a href="#about" class="font-display mobile-nav-link" style="color: #fff; font-size: 1.8rem; font-weight: 700; text-decoration: none;">ABOUT</a>
+    <a href="#learning" class="font-display mobile-nav-link" style="color: #fff; font-size: 1.8rem; font-weight: 700; text-decoration: none;">LEARNING PLATFORM</a>
+    <a href="#projects" class="font-display mobile-nav-link" style="color: #fff; font-size: 1.8rem; font-weight: 700; text-decoration: none;">PROJECTS</a>
+    <a href="#dev-lab" class="font-display mobile-nav-link" style="color: #fff; font-size: 1.8rem; font-weight: 700; text-decoration: none;">DEV LAB</a>
+    <a href="#process" class="font-display mobile-nav-link" style="color: #fff; font-size: 1.8rem; font-weight: 700; text-decoration: none;">PROCESS</a>
+    <a href="#community" class="font-display mobile-nav-link" style="color: #fff; font-size: 1.8rem; font-weight: 700; text-decoration: none;">COMMUNITY</a>
+    <a href="#contact" class="font-display mobile-nav-link" style="color: #fff; font-size: 1.8rem; font-weight: 700; text-decoration: none;">CONTACT</a>
+  </div>
+
+  <style>
+    @media (min-width: 1024px) {
+      .desktop-nav { display: flex !important; }
+      .mobile-only { display: none !important; }
+      .btn-discord-1 { display: inline-flex !important; }
+    }
+    #mobile-drawer.open {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    .nav-link.active {
+      color: #ff6600 !important;
+      text-shadow: 0 0 10px rgba(255, 85, 0, 0.5);
+    }
+  </style>
+
+  <!-- ======================================================================
+       01. HOMEPAGE HERO SECTION: 6-UI DISCIPLINE GRID
+       ====================================================================== -->
+  <section id="hero" style="position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 7rem 0 4rem 0; overflow: hidden;">
+    <div class="cyber-grid-orange" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10; text-align: center;">
+      
+      <!-- Studio Logo -->
+      <div class="reveal-item" style="display: inline-block; margin-bottom: 1.5rem; position: relative;">
+        <div style="position: absolute; inset: -20px; background: radial-gradient(circle, rgba(255, 85, 0, 0.35) 0%, transparent 70%); filter: blur(25px); pointer-events: none;"></div>
+        <img src="assets/logo/kcraft-logo.png" alt="KCraft Studio" style="width: 110px; height: 110px; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 0 25px rgba(255, 85, 0, 0.8));" class="animate-float">
+      </div>
+
+      <!-- Studio Tagline Badge -->
+      <div class="reveal-item delay-1" style="margin-bottom: 1rem;">
+        <span class="badge badge-orange" style="padding: 0.4rem 1rem; font-size: 0.8rem; letter-spacing: 0.15em;">
+          // ADVANCED ROBLOX ENGINE & TECHNOLOGY STUDIO //
+        </span>
+      </div>
+
+      <!-- Typography with Real-time Matrix Decoding -->
+      <h1 class="reveal-item delay-2 section-title" style="font-size: clamp(2.4rem, 6vw, 5rem); font-weight: 800; line-height: 0.95; margin-bottom: 1rem; letter-spacing: 0.02em;">
+        BUILD. CREATE. EXPLORE.<br>
+        <span class="text-gradient-orange">BEYOND LIMITS.</span>
+      </h1>
+
+      <p class="reveal-item delay-3" style="font-size: clamp(1rem, 1.8vw, 1.2rem); color: var(--text-muted); max-width: 780px; margin: 0 auto 2rem auto; line-height: 1.5;">
+        An independent creative environment dedicated to Roblox game development, interactive experiences, technology, learning, and creativity. Engineered by <span style="color: #ffaa00; font-weight: 600;">VAISHAKH798</span>.
+      </p>
+
+      <!-- Action CTAs -->
+      <div class="reveal-item delay-4" style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 3rem;">
+        <a href="#projects" class="btn btn-primary" style="padding: 0.8rem 1.8rem; font-size: 1rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          EXPLORE 6-UI PROJECTS
+        </a>
+        <a href="#learning" class="btn btn-secondary" style="padding: 0.8rem 1.8rem; font-size: 1rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          LEARNING PLATFORM
+        </a>
+        <a href="https://www.roblox.com/users/profile?username=VAISHAKH798" target="_blank" rel="noopener noreferrer" class="btn btn-roblox" style="padding: 0.8rem 1.5rem; font-size: 0.95rem;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5.38 0L0 18.62 18.62 24 24 5.38 5.38 0zm9.42 13.91l-4.14-1.2 1.2-4.14 4.14 1.2-1.2 4.14z"/></svg>
+          ROBLOX PROFILE
+        </a>
+      </div>
+
+      <!-- DENSE 6-UI TELEMETRY GRID (6 CARDS VISIBLE) -->
+      <div class="grid-6 reveal-item delay-5" style="max-width: 1300px; margin: 0 auto; text-align: left;">
+        
+        <div class="compact-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+            <span class="badge badge-orange">ENGINE 01</span>
+            <span class="font-mono" style="font-size: 0.65rem; color: #00e5ff;">[ACTIVE]</span>
+          </div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Combat Raycast Hitboxes</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Continuous sub-frame blade attachment sweeps for zero-latency melee hits.</p>
+        </div>
+
+        <div class="compact-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+            <span class="badge badge-red">ENGINE 02</span>
+            <span class="font-mono" style="font-size: 0.65rem; color: #00e5ff;">[ACTIVE]</span>
+          </div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Multi-Emitter Flame VFX</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Synchronized solar and blood-red particle vortexes with hardware point lights.</p>
+        </div>
+
+        <div class="compact-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+            <span class="badge badge-orange">ENGINE 03</span>
+            <span class="font-mono" style="font-size: 0.65rem; color: #00e5ff;">[ACTIVE]</span>
+          </div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">R15 Custom Rigging</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Mechanical cyber antennae accessories and layered gothic mesh clothing.</p>
+        </div>
+
+        <div class="compact-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+            <span class="badge badge-cyan">ENGINE 04</span>
+            <span class="font-mono" style="font-size: 0.65rem; color: #00e5ff;">[ACTIVE]</span>
+          </div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Luau Server Security</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Strict server-side validation against rate hacking and distance spoofing.</p>
+        </div>
+
+        <div class="compact-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+            <span class="badge badge-cyan">ENGINE 05</span>
+            <span class="font-mono" style="font-size: 0.65rem; color: #00e5ff;">[ACTIVE]</span>
+          </div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Motion Blur Trail Kinetics</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Attachment-interpolated white light ribbons with cubic ease-out decay.</p>
+        </div>
+
+        <div class="compact-card">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+            <span class="badge badge-green">ENGINE 06</span>
+            <span class="font-mono" style="font-size: 0.65rem; color: #00e5ff;">[ACTIVE]</span>
+          </div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Procedural Camera Shaker</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Sinusoidal matrix offset displacement for visceral anime strike impacts.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       02. ABOUT KCRAFT STUDIO: 6-UI PILLAR ARCHITECTURE
+       ====================================================================== -->
+  <section id="about" style="position: relative; padding: 5rem 0; border-top: 1px solid var(--border-subtle); background: var(--bg-obsidian);">
+    <div class="cyber-grid" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+      
+      <div class="section-header reveal-item">
+        <div class="section-tag">ENGINEERING PHILOSOPHY</div>
+        <h2 class="section-title">THE KCRAFT VISION</h2>
+        <p class="section-desc">
+          Founded and directed by <strong>VAISHAKH798</strong>: merging high-intensity combat physics, procedural particle visual effects, and rock-solid Luau server architecture.
+        </p>
+      </div>
+
+      <!-- COMPACT 6-CARD ABOUT PILLARS GRID -->
+      <div class="grid-6">
+        
+        <div class="compact-card">
+          <span class="badge badge-orange" style="margin-bottom: 0.5rem; align-self: flex-start;">PILLAR 01</span>
+          <h4 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">Kinetic Impact Weight</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Frame-perfect combat timing, screen flash triggers, and responsive hitboxes that make every sword slash feel heavy and tactile.</p>
+        </div>
+
+        <div class="compact-card">
+          <span class="badge badge-red" style="margin-bottom: 0.5rem; align-self: flex-start;">PILLAR 02</span>
+          <h4 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">Atmospheric Particle Layers</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Custom multi-tier particle emitters with synchronized PointLights, turbulent drag, and velocity-responsive color transitions.</p>
+        </div>
+
+        <div class="compact-card">
+          <span class="badge badge-cyan" style="margin-bottom: 0.5rem; align-self: flex-start;">PILLAR 03</span>
+          <h4 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">Authoritative Luau Code</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Modular OOP ModuleScripts with metatables, client prediction for responsiveness, and server validation against exploiters.</p>
+        </div>
+
+        <div class="compact-card">
+          <span class="badge badge-orange" style="margin-bottom: 0.5rem; align-self: flex-start;">PILLAR 04</span>
+          <h4 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">Custom Mesh Rigging</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Precision R15 bone hierarchies, custom antennae accessories, and layered mesh geometry optimized for PC and mobile.</p>
+        </div>
+
+        <div class="compact-card">
+          <span class="badge badge-green" style="margin-bottom: 0.5rem; align-self: flex-start;">PILLAR 05</span>
+          <h4 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">Open Learning Academy</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Structured developer curriculum sharing production-grade Luau mechanics, DataStore recovery, and animation sync techniques.</p>
+        </div>
+
+        <div class="compact-card">
+          <span class="badge badge-cyan" style="margin-bottom: 0.5rem; align-self: flex-start;">PILLAR 06</span>
+          <h4 style="font-size: 1.15rem; color: #fff; margin-bottom: 0.35rem;">Community Driven</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4;">Connected through dual official Discord servers and the verified Roblox profile @VAISHAKH798 for creator collaboration.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       03. ROBLOX LEARNING AND TEACHING PLATFORM: COMPACT 6-MODULE VIEW
+       ====================================================================== -->
+  <section id="learning" style="position: relative; padding: 5rem 0; border-top: 1px solid var(--border-subtle); background: var(--bg-deep-black);">
+    <div class="cyber-grid" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+      
+      <div class="section-header reveal-item">
+        <div class="section-tag">KNOWLEDGE REPOSITORY</div>
+        <h2 class="section-title">ROBLOX LEARNING PLATFORM</h2>
+        <p class="section-desc">
+          6+ compact modular curriculum cards visible per page: search Luau functions, inspect sample code, and copy production scripts.
+        </p>
+      </div>
+
+      <!-- Search & Filter Controls -->
+      <div class="reveal-item" style="max-width: 720px; margin: 0 auto 2.5rem auto; display: flex; flex-wrap: wrap; gap: 0.75rem;">
+        
+        <div style="flex: 2; min-width: 240px; position: relative;">
+          <input type="text" id="learning-search" placeholder="Search lessons (Raycast, RemoteEvent, Tween)..." 
+                 style="width: 100%; padding: 0.7rem 1rem 0.7rem 2.4rem; background: rgba(18, 18, 25, 0.85); border: 1px solid var(--border-subtle); border-radius: 6px; color: #fff; font-family: var(--font-body); font-size: 0.9rem; outline: none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+
+        <div style="flex: 1; min-width: 160px;">
+          <select id="learning-difficulty" style="width: 100%; padding: 0.7rem 1rem; background: rgba(18, 18, 25, 0.85); border: 1px solid var(--border-subtle); border-radius: 6px; color: #fff; font-family: var(--font-display); font-size: 0.9rem; outline: none; cursor: pointer;">
+            <option value="all">ALL DIFFICULTIES</option>
+            <option value="beginner">BEGINNER</option>
+            <option value="intermediate">INTERMEDIATE</option>
+            <option value="advanced">ADVANCED</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- DENSE 6-CARD LEARNING GRID -->
+      <div id="learning-categories" class="grid-6">
+        <!-- Rendered dynamically via js/main.js as compact cards -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       04. PROJECT SHOWCASE: 6-UI COMPACT MODULAR GALLERY
+       ====================================================================== -->
+  <section id="projects" style="position: relative; padding: 5rem 0; border-top: 1px solid var(--border-subtle); background: var(--bg-obsidian);">
+    <div class="cyber-grid-orange" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+      
+      <div class="section-header reveal-item">
+        <div class="section-tag">PORTFOLIO ARCHIVE</div>
+        <h2 class="section-title">ENGINEERING & PROJECT SHOWCASE</h2>
+        <p class="section-desc">
+          All 16 uploaded studio reference screenshots organized into a high-density 6-card modular grid. Rebuilt in real time by the multi-cursor swarm.
+        </p>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="reveal-item" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem;">
+        <button class="btn btn-primary project-filter-btn active" data-filter="all" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;">ALL (6)</button>
+        <button class="btn btn-secondary project-filter-btn" data-filter="combat-vfx" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;">SOLAR BLADE</button>
+        <button class="btn btn-secondary project-filter-btn" data-filter="melee-combat" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;">CRIMSON KATANA</button>
+        <button class="btn btn-secondary project-filter-btn" data-filter="trail-physics" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;">TRAIL KINETICS</button>
+        <button class="btn btn-secondary project-filter-btn" data-filter="character-rig" style="font-size: 0.8rem; padding: 0.45rem 0.9rem;">R15 RIGGING</button>
+      </div>
+
+      <!-- DENSE 6-CARD PROJECT GRID (AT LEAST 6 UI IN ONE VIEW) -->
+      <div id="projects-grid" class="grid-6">
+        <!-- Rendered dynamically by js/main.js as 6 compact cards -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       05. INTERACTIVE LUA DEVELOPMENT LAB: LIVE VM SIMULATOR
+       ====================================================================== -->
+  <section id="dev-lab" style="position: relative; padding: 5rem 0; border-top: 1px solid var(--border-subtle); background: var(--bg-deep-black);">
+    <div class="cyber-grid" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+      
+      <div class="section-header reveal-item">
+        <div class="section-tag">INTERACTIVE SANDBOX</div>
+        <h2 class="section-title">LUA DEVELOPMENT LABORATORY</h2>
+        <p class="section-desc">
+          Explore KCraft's production scripts in an interactive IDE. Inspect clean Luau architecture, copy safe code templates, and simulate mock engine execution in real time.
+        </p>
+      </div>
+
+      <div class="glass-panel reveal-item" style="padding: 0; overflow: hidden; border: 1px solid var(--border-glow); box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 85, 0, 0.15);">
+        
+        <!-- IDE Top Bar -->
+        <div style="background: rgba(14, 14, 20, 0.95); border-bottom: 1px solid var(--border-subtle); padding: 0.65rem 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <div style="display: flex; gap: 5px;">
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: #ff5f56; display: inline-block;"></span>
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: #ffbd2e; display: inline-block;"></span>
+              <span style="width: 10px; height: 10px; border-radius: 50%; background: #27c93f; display: inline-block;"></span>
+            </div>
+            <span id="lab-code-filename" class="font-mono" style="font-size: 0.8rem; color: #ffaa00; margin-left: 0.4rem;">RaycastHitboxModule.luau</span>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="lab-copy-btn" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              COPY
+            </button>
+            <button id="lab-simulate-btn" class="btn btn-primary" style="padding: 0.35rem 0.95rem; font-size: 0.78rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              RUN SIMULATION
+            </button>
+          </div>
+        </div>
+
+        <!-- Snippet Select Tabs -->
+        <div id="lab-snippet-tabs" style="background: rgba(10, 10, 14, 0.85); padding: 0.5rem 1.25rem; display: flex; gap: 0.4rem; overflow-x: auto; border-bottom: 1px solid var(--border-subtle);">
+          <!-- Injected via js/lua-lab.js -->
+        </div>
+
+        <!-- Main IDE Body -->
+        <div style="display: grid; grid-template-columns: 1fr; background: #07070a;">
+          <div style="padding: 0.85rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(15, 15, 22, 0.4);">
+            <h4 id="lab-code-title" style="font-size: 1.15rem; color: #fff; margin-bottom: 0.2rem;">Raycast Melee Hitbox Engine</h4>
+            <p id="lab-code-desc" style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">Production-grade raycast hitbox calculation for melee weapons.</p>
+          </div>
+
+          <pre style="padding: 1.25rem; max-height: 380px; overflow-y: auto; font-family: var(--font-mono); font-size: 0.82rem; color: #f5f5f7; line-height: 1.5; margin: 0;"><code id="lab-code-display">-- Loading script...</code></pre>
+
+          <!-- Mock Execution Console Output -->
+          <div style="background: #040406; border-top: 1px solid var(--border-subtle); padding: 0.85rem 1.25rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+              <span class="font-mono" style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">
+                // LUAU REAL-TIME EXECUTION SIMULATOR OUTPUT //
+              </span>
+              <span class="badge badge-green" style="font-size: 0.6rem;">ACTIVE VM</span>
+            </div>
+            <div id="lab-console-output" style="max-height: 110px; min-height: 70px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 4px; padding: 0.6rem 0.85rem; border: 1px solid rgba(255,255,255,0.05);">
+              <div class="font-mono text-sm" style="color: var(--text-dim);">[SYSTEM] Ready for simulation. Click 'RUN SIMULATION' above.</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       06. DEVELOPMENT PROCESS: KINETIC ASSEMBLY LINE
+       ====================================================================== -->
+  <section id="process" style="position: relative; padding: 5rem 0; border-top: 1px solid var(--border-subtle); background: var(--bg-obsidian);">
+    <div class="cyber-grid" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+      
+      <div class="section-header reveal-item">
+        <div class="section-tag">ENGINEERING ROADMAP</div>
+        <h2 class="section-title">THE KCRAFT DEVELOPMENT LIFECYCLE</h2>
+        <p class="section-desc">
+          8-stage kinetic methodology: concept art, 3D meshes, particle physics, and Luau algorithms transformed into gameplay.
+        </p>
+      </div>
+
+      <div class="grid-6">
+        
+        <div class="compact-card">
+          <div class="badge badge-orange" style="margin-bottom: 0.4rem; align-self: flex-start;">STAGE 01</div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Concept & Pacing</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Weapon strike timing, combo chains, and impact targets.</p>
+        </div>
+
+        <div class="compact-card">
+          <div class="badge badge-orange" style="margin-bottom: 0.4rem; align-self: flex-start;">STAGE 02</div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">R15 Mesh Rigging</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Low-poly meshes, weld hierarchies, and blade tracking points.</p>
+        </div>
+
+        <div class="compact-card">
+          <div class="badge badge-orange" style="margin-bottom: 0.4rem; align-self: flex-start;">STAGE 03</div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">VFX & Trail Physics</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Particle emitters, color sequences, and motion ribbons.</p>
+        </div>
+
+        <div class="compact-card">
+          <div class="badge badge-cyan" style="margin-bottom: 0.4rem; align-self: flex-start;">STAGE 04</div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Authoritative Luau</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Client prediction paired with strict server distance audits.</p>
+        </div>
+
+        <div class="compact-card">
+          <div class="badge badge-red" style="margin-bottom: 0.4rem; align-self: flex-start;">STAGE 05</div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Camera Impulses</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Sinusoidal camera shake timed to the apex of weapon cuts.</p>
+        </div>
+
+        <div class="compact-card">
+          <div class="badge badge-green" style="margin-bottom: 0.4rem; align-self: flex-start;">STAGE 06</div>
+          <h4 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.25rem;">Stress & Tuning</h4>
+          <p style="color: var(--text-muted); font-size: 0.8rem; line-height: 1.4;">Benchmarked under artificial 200ms latency and high particle density.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       07. COMMUNITY & SOCIAL CONNECTIONS: DUAL DISCORD & ROBLOX MATRIX
+       ====================================================================== -->
+  <section id="community" style="position: relative; padding: 5rem 0; border-top: 1px solid var(--border-subtle); background: var(--bg-deep-black);">
+    <div class="cyber-grid-orange" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+      
+      <div class="section-header reveal-item">
+        <div class="section-tag">COMMUNITY HUB</div>
+        <h2 class="section-title">CONNECT WITH KCRAFT</h2>
+        <p class="section-desc">
+          Join our active developer and player networks. Both Discord servers and the official Roblox profile have direct, individual clickable connections below.
+        </p>
+      </div>
+
+      <div class="grid-3" style="max-width: 1200px; margin: 0 auto;">
+        
+        <!-- Discord Server 1 Card -->
+        <div class="compact-card" style="text-align: center; padding: 1.75rem;">
+          <div style="width: 55px; height: 55px; border-radius: 12px; background: rgba(88, 101, 242, 0.15); border: 1px solid rgba(88, 101, 242, 0.4); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; color: #5865F2;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          </div>
+          <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 0.35rem;">DISCORD SERVER 1</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 1.25rem;">
+            Primary studio announcements, sneak peeks, and release updates.
+          </p>
+          <a href="https://discord.gg/NUMnh3fwq" target="_blank" rel="noopener noreferrer" class="btn btn-discord-1" style="width: 100%; padding: 0.65rem;">
+            JOIN SERVER 1
+          </a>
+        </div>
+
+        <!-- Discord Server 2 Card -->
+        <div class="compact-card" style="text-align: center; padding: 1.75rem;">
+          <div style="width: 55px; height: 55px; border-radius: 12px; background: rgba(64, 78, 237, 0.15); border: 1px solid rgba(64, 78, 237, 0.4); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; color: #6d78f2;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.893.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          </div>
+          <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 0.35rem;">DISCORD SERVER 2</h3>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 1.25rem;">
+            Luau engineering assistance and developer collaboration.
+          </p>
+          <a href="https://discord.gg/2NBSbzQDU" target="_blank" rel="noopener noreferrer" class="btn btn-discord-2" style="width: 100%; padding: 0.65rem;">
+            JOIN SERVER 2
+          </a>
+        </div>
+
+        <!-- Official Roblox Profile Card -->
+        <div class="compact-card" style="text-align: center; padding: 1.75rem;">
+          <div style="width: 55px; height: 55px; border-radius: 12px; background: rgba(255, 85, 0, 0.15); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; color: var(--primary-orange);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M5.38 0L0 18.62 18.62 24 24 5.38 5.38 0zm9.42 13.91l-4.14-1.2 1.2-4.14 4.14 1.2-1.2 4.14z"/></svg>
+          </div>
+          <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 0.35rem;">ROBLOX PROFILE</h3>
+          <div style="font-family: var(--font-mono); font-size: 0.8rem; color: #ffaa00; margin-bottom: 0.5rem;">@VAISHAKH798</div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; margin-bottom: 1.25rem;">
+            Official creations, verified models, and studio experiences.
+          </p>
+          <a href="https://www.roblox.com/users/profile?username=VAISHAKH798" target="_blank" rel="noopener noreferrer" class="btn btn-roblox" style="width: 100%; padding: 0.65rem;">
+            VISIT PROFILE
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       08. CONTACT SECTION: DIRECT DISPATCH TRANSMISSION
+       ====================================================================== -->
+  <section id="contact" style="position: relative; padding: 5rem 0; border-top: 1px solid var(--border-subtle); background: var(--bg-obsidian);">
+    <div class="cyber-grid" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+      
+      <div class="section-header reveal-item">
+        <div class="section-tag">DIRECT INQUIRIES</div>
+        <h2 class="section-title">COMMISSION & COLLABORATION</h2>
+        <p class="section-desc">
+          Interested in custom Roblox combat mechanics, particle VFX rigs, code architecture reviews, or studio collaborations? Connect with KCraft.
+        </p>
+      </div>
+
+      <div style="max-width: 680px; margin: 0 auto;">
+        
+        <div class="glass-panel reveal-item" style="padding: 2rem;">
+          <form id="studio-contact-form">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label style="display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase;">Your Name / Studio *</label>
+                <input type="text" name="name" required placeholder="e.g. Alex (Apex Studios)" 
+                       style="width: 100%; padding: 0.75rem; background: rgba(10, 10, 15, 0.85); border: 1px solid var(--border-subtle); border-radius: 6px; color: #fff; font-family: var(--font-body); font-size: 0.9rem; outline: none;">
+              </div>
+
+              <div>
+                <label style="display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase;">Discord / Roblox Username</label>
+                <input type="text" name="discord" placeholder="e.g. @Username" 
+                       style="width: 100%; padding: 0.75rem; background: rgba(10, 10, 15, 0.85); border: 1px solid var(--border-subtle); border-radius: 6px; color: #fff; font-family: var(--font-body); font-size: 0.9rem; outline: none;">
+              </div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase;">Inquiry Category *</label>
+              <select name="topic" style="width: 100%; padding: 0.75rem; background: rgba(10, 10, 15, 0.85); border: 1px solid var(--border-subtle); border-radius: 6px; color: #fff; font-family: var(--font-display); font-size: 0.95rem; outline: none; cursor: pointer;">
+                <option value="Game Combat & VFX Commission">Game Combat & VFX Commission</option>
+                <option value="Luau Code Review & Optimization">Luau Code Review & Optimization</option>
+                <option value="Learning Platform Feedback / Question">Learning Platform Feedback / Question</option>
+                <option value="General Studio Inquiry">General Studio Inquiry</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom: 1.25rem;">
+              <label style="display: block; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; text-transform: uppercase;">Project Details / Message *</label>
+              <textarea name="message" required rows="4" placeholder="Describe your project, timeline, mechanics required, or questions..." 
+                        style="width: 100%; padding: 0.75rem; background: rgba(10, 10, 15, 0.85); border: 1px solid var(--border-subtle); border-radius: 6px; color: #fff; font-family: var(--font-body); font-size: 0.9rem; outline: none; resize: vertical;"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              DISPATCH TRANSMISSION
+            </button>
+
+            <div id="contact-form-status"></div>
+
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================================
+       09. CINEMATIC FOOTER
+       ====================================================================== -->
+  <footer style="position: relative; padding: 4rem 0 2.5rem 0; border-top: 1px solid var(--border-subtle); background: var(--bg-deep-black);">
+    <div class="cyber-grid" aria-hidden="true"></div>
+
+    <div class="container" style="position: relative; z-index: 10;">
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2.5rem; margin-bottom: 3rem;">
+        
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+            <img src="assets/logo/kcraft-logo.png" alt="KCraft Logo" style="width: 42px; height: 42px; object-fit: contain;">
+            <span class="font-display" style="font-size: 1.5rem; font-weight: 800; color: #fff;">K<span style="color: var(--primary-orange);">CRAFT</span></span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5; margin-bottom: 1rem;">
+            Independent Roblox game development, combat engineering, dynamic particle VFX, and advanced creator learning environment.
+          </p>
+          <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--primary-orange);">
+            ROBLOX CREATOR: VAISHAKH798
+          </div>
+        </div>
+
+        <div>
+          <h4 style="font-size: 1rem; color: #fff; margin-bottom: 1rem;">SITEMAP</h4>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+            <li><a href="#hero" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Home</a></li>
+            <li><a href="#about" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">About Studio</a></li>
+            <li><a href="#learning" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Learning Academy</a></li>
+            <li><a href="#projects" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Project Showcase (6-UI)</a></li>
+            <li><a href="#dev-lab" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Lua Dev Lab</a></li>
+            <li><a href="#process" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Engineering Process</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="font-size: 1rem; color: #fff; margin-bottom: 1rem;">CURRICULUM</h4>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+            <li><a href="#learning" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Studio Fundamentals</a></li>
+            <li><a href="#learning" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Luau Scripting & OOP</a></li>
+            <li><a href="#learning" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Combat Raycast Hitboxes</a></li>
+            <li><a href="#learning" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Particle VFX & Lighting</a></li>
+            <li><a href="#learning" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">NPC Pathfinding & AI</a></li>
+            <li><a href="#learning" style="color: var(--text-muted); text-decoration: none; font-size: 0.85rem;">Secure Server Architecture</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 style="font-size: 1rem; color: #fff; margin-bottom: 1rem;">OFFICIAL NETWORKS</h4>
+          <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+            <a href="https://discord.gg/NUMnh3fwq" target="_blank" rel="noopener noreferrer" class="btn btn-discord-1" style="justify-content: flex-start; padding: 0.5rem 0.85rem; font-size: 0.8rem;">
+              DISCORD SERVER 1
+            </a>
+            <a href="https://discord.gg/2NBSbzQDU" target="_blank" rel="noopener noreferrer" class="btn btn-discord-2" style="justify-content: flex-start; padding: 0.5rem 0.85rem; font-size: 0.8rem;">
+              DISCORD SERVER 2
+            </a>
+            <a href="https://www.roblox.com/users/profile?username=VAISHAKH798" target="_blank" rel="noopener noreferrer" class="btn btn-roblox" style="justify-content: flex-start; padding: 0.5rem 0.85rem; font-size: 0.8rem;">
+              ROBLOX: VAISHAKH798
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div class="font-mono" style="font-size: 0.75rem; color: var(--text-dim);">
+          &copy; 2026 KCRAFT STUDIO. ALL RIGHTS RESERVED.
+        </div>
+        <div class="font-mono" style="font-size: 0.75rem; color: var(--text-dim);">
+          DESIGNED & ENGINEERED FOR GOOGLE ANTIGRAVITY
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Fullscreen Modal Lightbox -->
+  <div id="lightbox-modal" role="dialog" aria-modal="true" aria-label="Project Asset Gallery Lightbox">
+    <button class="lightbox-close" aria-label="Close Lightbox">&times;</button>
+    <button class="lightbox-prev" aria-label="Previous Asset">&#10094;</button>
+    <button class="lightbox-next" aria-label="Next Asset">&#10095;</button>
+
+    <div class="lightbox-content">
+      <img src="" alt="" class="lightbox-image">
+      <div class="lightbox-caption">
+        <h3 class="lightbox-title"></h3>
+        <p class="lightbox-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/multi-cursor-engine.js"></script>
+  <script src="js/construction-engine.js"></script>
+  <script src="js/webgl-hero.js"></script>
+  <script src="js/learning-data.js"></script>
+  <script src="js/projects-data.js"></script>
+  <script src="js/lua-lab.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
